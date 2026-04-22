@@ -36,32 +36,41 @@ export default function QuadrantView({ data }) {
   }, [data]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 overflow-visible">
-      <div className="mb-8">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+      <div className="mb-6">
         <h3 className="text-2xl font-bold text-slate-800">Architectural Deployment Matrix</h3>
-        <p className="text-slate-500 text-sm mt-1">Evaluated by Enterprise Scalability vs. AI-Native Architecture</p>
+        <p className="text-slate-500 text-sm mt-1">Evaluated by Enterprise Scalability (Vertical) vs. AI-Native Architecture (Horizontal)</p>
       </div>
       
-      <div className="relative w-full aspect-[4/3] max-h-[700px] border-l-2 border-b-2 border-slate-800 bg-white ml-10 mb-10 mt-4">
+      {/* Changed to a wider aspect ratio so it looks great on full-screen monitors */}
+      <div className="relative w-full aspect-video min-h-[600px] max-h-[800px] border-l-2 border-b-2 border-slate-800 bg-white">
         
-        {/* X-Axis */}
-        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 font-bold text-slate-500 tracking-widest uppercase text-xs flex items-center whitespace-nowrap">
-          Legacy Architecture <span className="mx-4 text-lg text-slate-300">→</span> Purpose-Built AI-Native
-        </div>
-        
-        {/* Y-Axis (Fixed Rotation) */}
-        <div className="absolute top-1/2 -left-12 -translate-y-1/2 origin-center -rotate-90">
-          <div className="font-bold text-slate-500 tracking-widest uppercase text-xs flex items-center whitespace-nowrap">
-            Tactical Point Solution <span className="mx-4 text-lg text-slate-300">→</span> Enterprise Scalable
-          </div>
-        </div>
-        
-        {/* Quadrant Labels */}
+        {/* Cleaned up Quadrants with descriptions */}
         <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-          <div className="border-r border-b border-slate-200 bg-slate-50/50 relative"><span className="absolute top-4 left-4 text-slate-500 font-bold uppercase tracking-widest text-xs">Established Platforms</span></div>
-          <div className="border-b border-slate-200 bg-blue-50/30 relative"><span className="absolute top-4 right-4 text-blue-600 font-bold uppercase tracking-widest text-xs">Enterprise AI-Native</span></div>
-          <div className="border-r border-slate-200 bg-white relative"><span className="absolute bottom-4 left-4 text-slate-400 font-bold uppercase tracking-widest text-xs">Legacy Point Solutions</span></div>
-          <div className="bg-purple-50/30 relative"><span className="absolute bottom-4 right-4 text-purple-600 font-bold uppercase tracking-widest text-xs">Emerging AI Startups</span></div>
+          
+          {/* Top Left */}
+          <div className="border-r border-b border-slate-200 bg-slate-50/50 relative p-6">
+            <div className="text-slate-500 font-bold uppercase tracking-widest text-sm">Established Platforms</div>
+            <div className="text-slate-400 text-xs mt-1 max-w-[250px]">Highly scalable, but AI features are bolted onto legacy architecture.</div>
+          </div>
+          
+          {/* Top Right */}
+          <div className="border-b border-slate-200 bg-blue-50/30 relative p-6 text-right flex flex-col items-end">
+            <div className="text-blue-700 font-bold uppercase tracking-widest text-sm">Enterprise AI-Native</div>
+            <div className="text-blue-600/70 text-xs mt-1 max-w-[250px]">Built specifically for AI environments with seamless enterprise governance.</div>
+          </div>
+          
+          {/* Bottom Left */}
+          <div className="border-r border-slate-200 bg-white relative p-6 flex flex-col justify-end">
+            <div className="text-slate-400 font-bold uppercase tracking-widest text-sm">Legacy Point Solutions</div>
+            <div className="text-slate-300 text-xs mt-1 max-w-[250px]">Niche tools lacking both modern AI capabilities and broad scalability.</div>
+          </div>
+          
+          {/* Bottom Right */}
+          <div className="bg-purple-50/30 relative p-6 flex flex-col justify-end items-end text-right">
+            <div className="text-purple-700 font-bold uppercase tracking-widest text-sm">Emerging AI Startups</div>
+            <div className="text-purple-500/70 text-xs mt-1 max-w-[250px]">Cutting-edge AI protections, but may require heavy engineering to deploy.</div>
+          </div>
         </div>
         
         {/* Data Points */}
