@@ -37,15 +37,36 @@ export default function App() {
   }
 
   return (
-    <div className="w-full max-w-[96vw] mx-auto p-6 text-slate-900 font-sans">
-      <header className="mb-6 flex justify-between items-end border-b border-slate-200 pb-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">AI Security Stack Matrix</h1>
-          <div className="mt-4 flex space-x-2">
-            <button onClick={() => setActiveTab('swimlane')} className={`px-4 py-2 rounded font-bold text-sm ${activeTab === 'swimlane' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>Architecture Swimlanes</button>
-            <button onClick={() => setActiveTab('quadrant')} className={`px-4 py-2 rounded font-bold text-sm ${activeTab === 'quadrant' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>Market Quadrant</button>
-            <button onClick={() => setActiveTab('conflict')} className={`px-4 py-2 rounded font-bold text-sm ${activeTab === 'conflict' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>⚡ Stack Analyzer</button>
-          </div>
+    <div className="w-full max-w-[96vw] mx-auto p-6 text-[color:#707070] font-sans">
+      <header className="mb-6 flex justify-between items-center border-b border-slate-200 pb-4">
+        <div className="flex items-center space-x-6">
+          {/* Brand Logo */}
+          <img
+            src={`${import.meta.env.BASE_URL}stack-solutions-logo.png`}
+            alt="stack solutions"
+            className="h-12 w-auto object-contain"
+          />
+          {/* Light Gray Title Text */}
+          <h1 className="text-3xl font-bold text-[color:#707070]">AI Security Stack Matrix</h1>
+        </div>
+
+        {/* Branded Tab Navigation */}
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setActiveTab('swimlane')}
+            className={`px-4 py-2 rounded font-bold text-sm transition-colors border-2 ${activeTab === 'swimlane' ? 'bg-[color:#00A35D] text-white shadow-md border-[color:#19C37A]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-transparent'}`}>
+            Architecture Swimlanes
+          </button>
+          <button
+            onClick={() => setActiveTab('quadrant')}
+            className={`px-4 py-2 rounded font-bold text-sm transition-colors border-2 ${activeTab === 'quadrant' ? 'bg-[color:#00A35D] text-white shadow-md border-[color:#19C37A]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-transparent'}`}>
+            Market Quadrant
+          </button>
+          <button
+            onClick={() => setActiveTab('conflict')}
+            className={`px-4 py-2 rounded font-bold text-sm transition-colors border-2 ${activeTab === 'conflict' ? 'bg-[color:#00A35D] text-white shadow-md border-[color:#19C37A]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-transparent'}`}>
+            ⚡ Stack Analyzer
+          </button>
         </div>
       </header>
 

@@ -45,7 +45,7 @@ export default function QuadrantView({ data }) {
       {/* Changed to a wider aspect ratio so it looks great on full-screen monitors */}
       <div className="relative w-full aspect-video min-h-[600px] max-h-[800px] border-l-2 border-b-2 border-slate-800 bg-white">
         
-        {/* Cleaned up Quadrants with descriptions */}
+        {/* Cleaned up Quadrants with Branded Backgrounds */}
         <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
           
           {/* Top Left */}
@@ -54,10 +54,10 @@ export default function QuadrantView({ data }) {
             <div className="text-slate-400 text-xs mt-1 max-w-[250px]">Highly scalable, but AI features are bolted onto legacy architecture.</div>
           </div>
           
-          {/* Top Right */}
-          <div className="border-b border-slate-200 bg-blue-50/30 relative p-6 text-right flex flex-col items-end">
-            <div className="text-blue-700 font-bold uppercase tracking-widest text-sm">Enterprise AI-Native</div>
-            <div className="text-blue-600/70 text-xs mt-1 max-w-[250px]">Built specifically for AI environments with seamless enterprise governance.</div>
+          {/* Top Right (Brand Highlight) */}
+          <div className="border-b border-slate-200 bg-[color:#00A35D]/10 relative p-6 text-right flex flex-col items-end">
+            <div className="text-[color:#00A35D] font-bold uppercase tracking-widest text-sm">Enterprise AI-Native</div>
+            <div className="text-[color:#00A35D]/80 text-xs mt-1 max-w-[250px]">Built specifically for AI environments with seamless enterprise governance.</div>
           </div>
           
           {/* Bottom Left */}
@@ -66,24 +66,26 @@ export default function QuadrantView({ data }) {
             <div className="text-slate-300 text-xs mt-1 max-w-[250px]">Niche tools lacking both modern AI capabilities and broad scalability.</div>
           </div>
           
-          {/* Bottom Right */}
-          <div className="bg-purple-50/30 relative p-6 flex flex-col justify-end items-end text-right">
-            <div className="text-purple-700 font-bold uppercase tracking-widest text-sm">Emerging AI Startups</div>
-            <div className="text-purple-500/70 text-xs mt-1 max-w-[250px]">Cutting-edge AI protections, but may require heavy engineering to deploy.</div>
+          {/* Bottom Right (Brand Secondary Highlight) */}
+          <div className="bg-[color:#19C37A]/10 relative p-6 flex flex-col justify-end items-end text-right">
+            <div className="text-[color:#00A35D] font-bold uppercase tracking-widest text-sm">Emerging AI Startups</div>
+            <div className="text-[color:#00A35D]/70 text-xs mt-1 max-w-[250px]">Cutting-edge AI protections, but may require heavy engineering to deploy.</div>
           </div>
         </div>
         
         {/* Data Points */}
         {plotData.map((v, i) => (
           <div key={i} className={`absolute transition-all duration-500 ${v.isDimmed ? 'opacity-15 grayscale pointer-events-none z-0' : 'group cursor-pointer z-10 hover:z-50'}`} style={{ left: `${v.x}%`, bottom: `${v.y}%` }}>
-            <div className={`absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow-md transition-colors ${v.isDimmed ? 'bg-slate-400' : 'bg-slate-800 group-hover:bg-blue-600'}`}></div>
-            <div className={`absolute top-1/2 -translate-y-1/2 left-3 text-xs font-bold whitespace-nowrap drop-shadow-sm pointer-events-none transition-colors ${v.isDimmed ? 'text-slate-400' : 'text-slate-700 group-hover:text-blue-700'}`}>{v.Vendor}</div>
+            {/* Branded dots */}
+            <div className={`absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow-md transition-colors ${v.isDimmed ? 'bg-slate-400' : 'bg-[color:#00A35D] group-hover:bg-[color:#19C37A]'}`}></div>
+            {/* Branded text hover */}
+            <div className={`absolute top-1/2 -translate-y-1/2 left-3 text-xs font-bold whitespace-nowrap drop-shadow-sm pointer-events-none transition-colors ${v.isDimmed ? 'text-slate-400' : 'text-slate-700 group-hover:text-[color:#00A35D]'}`}>{v.Vendor}</div>
             
             {!v.isDimmed && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-slate-900 text-white p-3 rounded-lg opacity-0 group-hover:opacity-100 shadow-xl w-64 pointer-events-none transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 border border-slate-700 text-left z-50">
                 <div className="font-bold text-base border-b border-slate-700 pb-1 mb-2">{v.Vendor}</div>
                 <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="text-slate-400">Target Size:</div><div className="font-semibold text-right text-blue-300">{v['Target Size']}</div>
+                  <div className="text-slate-400">Target Size:</div><div className="font-semibold text-right text-[color:#19C37A]">{v['Target Size']}</div>
                   <div className="text-slate-400">Friction:</div><div className="font-semibold text-right">{v['Deployment Friction']}</div>
                 </div>
                 <div className="text-xs text-slate-300 italic pt-2 border-t border-slate-700">{v['Core Differentiator']}</div>
