@@ -37,7 +37,7 @@ export default function App() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 text-slate-900 font-sans">
+    <div className="w-full max-w-[96vw] mx-auto p-6 text-slate-900 font-sans">
       <header className="mb-6 flex justify-between items-end border-b border-slate-200 pb-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">AI Security Stack Matrix</h1>
