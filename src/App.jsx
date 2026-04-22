@@ -15,8 +15,8 @@ export default function App() {
   // Load from public folder instead of Google Sheets for the initial build
   useEffect(() => {
     Promise.all([
-      fetch('/data/Vendors.csv').then(res => res.text()),
-      fetch('/data/Overlap_Details.csv').then(res => res.text())
+      fetch(`${import.meta.env.BASE_URL}data/Vendors.csv`).then(r => r.text()),
+      fetch(`${import.meta.env.BASE_URL}data/Overlap_Details.csv`).then(r => r.text())
     ]).then(([vendorsCsv, overlapsCsv]) => {
       Papa.parse(vendorsCsv, { header: true, skipEmptyLines: true, complete: (res) => setRawVendors(res.data) });
       Papa.parse(overlapsCsv, { header: true, skipEmptyLines: true, complete: (res) => setOverlaps(res.data) });
@@ -49,10 +49,10 @@ export default function App() {
         </div>
       </header>
 
-      <ControlPanel 
-        filterSize={filterSize} setFilterSize={setFilterSize} 
-        filterFriction={filterFriction} setFilterFriction={setFilterFriction} 
-        totalTools={rawVendors.length} activeCount={vendors.filter(v => !v.isDimmed).length} 
+      <ControlPanel
+        filterSize={filterSize} setFilterSize={setFilterSize}
+        filterFriction={filterFriction} setFilterFriction={setFilterFriction}
+        totalTools={rawVendors.length} activeCount={vendors.filter(v => !v.isDimmed).length}
       />
 
       {activeTab === 'swimlane' && <SwimlaneView data={vendors} />}
