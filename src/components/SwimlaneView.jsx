@@ -17,17 +17,17 @@ export default function SwimlaneView({ data }) {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 overflow-visible">
+    <div className="bg-white rounded-xl shadow-sm border-2 border-slate-900 p-8 overflow-visible">
       <h3 className="text-2xl font-bold mb-2 text-slate-800">Deployment Roadmap: Architecture Swimlanes</h3>
       <p className="text-slate-500 mb-6 text-sm">Strategic phasing of AI security tools based on organizational maturity and budget.</p>
       
       <div className="grid grid-cols-3 gap-4 mb-8">
         {phaseDetails.map(p => (
-          <div key={p.name} className="bg-slate-50 border border-slate-200 rounded-lg p-5 shadow-sm relative overflow-hidden">
-            <div className={`absolute top-0 left-0 w-1 h-full ${p.name === 'Crawl' ? 'bg-slate-400' : p.name === 'Walk' ? 'bg-[color:#19C37A]' : 'bg-[color:#00A35D]'}`}></div>
+          <div key={p.name} className="bg-slate-50 border-2 border-slate-900 rounded-lg p-5 shadow-sm relative overflow-hidden">
+            <div className={`absolute top-0 left-0 w-1.5 h-full ${p.name === 'Crawl' ? 'bg-slate-800' : p.name === 'Walk' ? 'bg-[color:#19C37A]' : 'bg-[color:#00A35D]'}`}></div>
             <div className="flex justify-between items-start mb-2 pl-2">
               <h4 className="font-bold text-slate-800 uppercase tracking-widest">{p.name} Phase</h4>
-              <span className="text-xs font-bold bg-white border border-slate-200 px-2 py-1 rounded text-slate-500">{p.time}</span>
+              <span className="text-xs font-bold bg-white border-2 border-slate-900 px-2 py-1 rounded text-slate-800">{p.time}</span>
             </div>
             <div className="text-xs font-bold text-[color:#00A35D] mb-3 pl-2">{p.budget}</div>
             <p className="text-sm text-slate-600 leading-relaxed pl-2">{p.desc}</p>
@@ -35,26 +35,30 @@ export default function SwimlaneView({ data }) {
         ))}
       </div>
 
-      <div className="min-w-[900px] border-t border-slate-200 pt-6 pb-24">
+      <div className="min-w-[900px] border-t-2 border-slate-900 pt-6 pb-24">
         <div className="grid grid-cols-4 gap-4 mb-4">
-          <div className="font-bold text-slate-400 uppercase text-xs tracking-wider">Architecture Layer</div>
-          {phases.map(phase => <div key={phase} className="font-bold text-slate-400 uppercase text-xs tracking-wider text-center">{phase} Phase</div>)}
+          <div className="font-bold text-slate-800 uppercase text-xs tracking-wider">Architecture Layer</div>
+          {phases.map(phase => <div key={phase} className="font-bold text-slate-800 uppercase text-xs tracking-wider text-center">{phase} Phase</div>)}
         </div>
         <div className="space-y-4">
           {layers.map(layer => (
             <div key={layer.id} className="grid grid-cols-4 gap-4">
-              {/* Branded layer background */}
-              <div className="p-4 rounded-lg bg-[color:#00A35D] flex items-center shadow-sm">
+              
+              {/* Heavy borders on the row headers */}
+              <div className="p-4 rounded-lg bg-[color:#707070] border-2 border-slate-900 flex items-center shadow-md">
                 <span className="font-semibold text-white text-sm">{layer.name}</span>
               </div>
+              
               {phases.map(phase => {
                 const vendors = data.filter(v => String(v['Layer #']) === layer.id && v['Maturity Phase'] === phase);
                 return (
-                  <div key={`${layer.id}-${phase}`} className="bg-slate-50 rounded-lg border border-slate-200 p-3 min-h-[80px] flex flex-wrap gap-2 items-start content-start">
+                  // Heavy borders on the swimlanes
+                  <div key={`${layer.id}-${phase}`} className="bg-slate-100 rounded-lg border-2 border-slate-900 p-3 min-h-[80px] flex flex-wrap gap-2 items-start content-start shadow-inner">
                     {vendors.map(v => (
                       <div key={v.Vendor} className={`relative w-full transition-all duration-300 ${v.isDimmed ? 'opacity-20 grayscale pointer-events-none' : 'group cursor-pointer'}`}>
-                        {/* Branded vendor hover state */}
-                        <div className={`bg-white border shadow-sm rounded px-3 py-2 text-xs font-bold w-full text-center transition-colors ${v.isDimmed ? 'border-slate-200 text-slate-400' : 'border-slate-300 text-slate-700 group-hover:border-[color:#00A35D] group-hover:text-[color:#00A35D]'}`}>
+                        
+                        {/* Heavy borders on the vendor cards */}
+                        <div className={`bg-white shadow-sm rounded px-3 py-2 text-xs font-bold w-full text-center transition-all border-2 ${v.isDimmed ? 'border-slate-300 text-slate-400' : 'border-slate-900 text-slate-800 group-hover:border-[color:#00A35D] group-hover:text-[color:#00A35D] group-hover:shadow-md'}`}>
                           {v.Vendor}
                         </div>
                         
@@ -65,7 +69,7 @@ export default function SwimlaneView({ data }) {
                                 <div className="font-bold text-lg leading-tight">{v.Vendor}</div>
                                 <div className="text-[color:#19C37A] text-[10px] font-bold uppercase tracking-widest mt-1">{v.Category}</div>
                               </div>
-                              <div className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${v['Deployment Friction'] === 'Low' ? 'bg-green-500/20 text-green-300' : v['Deployment Friction'] === 'Medium' ? 'bg-amber-500/20 text-amber-300' : 'bg-red-500/20 text-red-300'}`}>
+                              <div className={`px-2 py-1 rounded border border-white/20 text-[10px] font-bold uppercase tracking-wider ${v['Deployment Friction'] === 'Low' ? 'bg-green-500/20 text-green-300' : v['Deployment Friction'] === 'Medium' ? 'bg-amber-500/20 text-amber-300' : 'bg-red-500/20 text-red-300'}`}>
                                 {v['Deployment Friction']} Friction
                               </div>
                             </div>
