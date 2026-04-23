@@ -43,5 +43,5 @@ WhyLabs,Nightfall AI,Partial Overlap,PII detection overlap,EVALUATE — may just
 Datadog LLM Observability,Arize AI,Direct Competitor,direct competitor for non-DD shops,CHOOSE ONE — evaluate head-to-head based on client's stack and size
 Datadog LLM Observability,WhyLabs,Partial Overlap,monitoring overlap,EVALUATE — may justify both if scopes are distinct enough; quantify overlap %
 Datadog LLM Observability,Galileo AI,Partial Overlap,eval overlap,EVALUATE — may justify both if scopes are distinct enough; quantify overlap %
-Netskope,Palo Alto Networks,Inline SASE & DLP,High,Direct conflict at the network edge. Running both Netskope and Prisma Access for AI prompt inspection will cause massive routing hairpins and duplicate decryption latency. Standardize on one SSE.
-Cyera,Wiz,Data Security Posture (DSPM),Medium,Wiz includes basic cloud data scanning, but Cyera provides much deeper AI-specific data classification. Cyera should feed context into Wiz rather than operating in an isolated silo.
+Netskope,Palo Alto Networks,Direct Competitor,Inline SASE & DLP overlap at edge,CHOOSE ONE — evaluate head-to-head based on client's stack and size
+Cyera,Wiz,Partial Overlap,DSPM vs CNAPP data discovery overlap,EVALUATE — may justify both if scopes are distinct enough; quantify overlap %
