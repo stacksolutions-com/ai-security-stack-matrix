@@ -29,5 +29,5 @@ Protect AI,AI-Native Startup,L2: Prompt Guardrails,2,Enterprise,Medium,Walk,Prov
 Mithril Security,AI-Native Startup,L3: Runtime Protection,3,Enterprise,High,Run,Niche expertise in Confidential Computing. Provides secure enclaves (TEE) that allow organizations to deploy open-source models while mathematically guaranteeing data privacy during inference.,40,90,70,60
 Symmetry Systems,AI-Native Startup,L4: Governance & GRC,4,Enterprise,Medium,Walk,A DSPM (Data Security Posture Management) tool that has pivoted to map exactly what sensitive data unstructured GenAI tools have access to within the corporate environment.,60,95,30,70
 Varonis,Big Platform,L4: Governance & GRC,4,Enterprise,High,Crawl,The legacy heavyweight in data classification. Absolutely critical for identifying and locking down over-permissioned internal data *before* turning on enterprise search tools like MS Copilot.,70,95,20,80
-Netskope,Big Platform,Enterprise,Medium,2,Walk,High,20,90,70,60,Inline SASE/SSE with real-time AI prompt DLP and shadow AI application control.
-Cyera,Platform Security,Enterprise,Low,4,Walk,High,30,95,20,85,Agentless AI DSPM that automatically discovers and classifies shadow training data and LLM data exposure.
+Netskope,Big Platform,L2: Prompt Guardrails,2,Enterprise,Medium,Walk,Inline SASE/SSE with real-time AI prompt DLP and shadow AI application control.,20,90,70,60
+Cyera,Platform Security,L4: Governance & GRC,4,Enterprise,Low,Walk,Agentless AI DSPM that automatically discovers and classifies shadow training data and LLM data exposure.,30,95,20,85
