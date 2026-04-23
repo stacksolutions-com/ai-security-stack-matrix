@@ -9,7 +9,7 @@ export default function SwimlaneView({ data }) {
     { id: "5", name: "L5: Observability" }
   ];
   const phases = ["Crawl", "Walk", "Run"];
-  
+
   const phaseDetails = [
     { name: 'Crawl', time: '0–6 Months', budget: '$50K–$200K/yr', desc: 'Deploy identity basics + prompt guardrails. Establish shadow AI visibility. Get API keys under governance.' },
     { name: 'Walk', time: '6–18 Months', budget: '$200K–$600K/yr', desc: 'Runtime protection + governance. ML supply chain scanning, AI risk assessments, CI/CD compliance gates, observability.' },
@@ -20,7 +20,7 @@ export default function SwimlaneView({ data }) {
     <div className="bg-white rounded-xl shadow-sm border-2 border-slate-900 p-8 overflow-visible">
       <h3 className="text-2xl font-bold mb-2 text-slate-800">Deployment Roadmap: Architecture Swimlanes</h3>
       <p className="text-slate-500 mb-6 text-sm">Strategic phasing of AI security tools based on organizational maturity and budget.</p>
-      
+
       <div className="grid grid-cols-3 gap-4 mb-8">
         {phaseDetails.map(p => (
           <div key={p.name} className="bg-slate-50 border-2 border-slate-900 rounded-lg p-5 shadow-sm relative overflow-hidden">
@@ -43,25 +43,27 @@ export default function SwimlaneView({ data }) {
         <div className="space-y-4">
           {layers.map(layer => (
             <div key={layer.id} className="grid grid-cols-4 gap-4">
-              
+
               {/* Heavy borders on the row headers */}
               <div className="p-4 rounded-lg bg-[color:#707070] border-2 border-slate-900 flex items-center shadow-md">
                 <span className="font-semibold text-white text-sm">{layer.name}</span>
               </div>
-              
+
               {phases.map(phase => {
-                const vendors = data.filter(v => String(v['Layer #']) === layer.id && v['Maturity Phase'] === phase);
+                const vendors = data.filter(v =>
+                  String(v['Layer #'] || '').trim() === layer.id &&
+                  String(v['Maturity Phase'] || '').trim() === phase
+                );
                 return (
-                  // Heavy borders on the swimlanes
                   <div key={`${layer.id}-${phase}`} className="bg-slate-100 rounded-lg border-2 border-slate-900 p-3 min-h-[80px] flex flex-wrap gap-2 items-start content-start shadow-inner">
                     {vendors.map(v => (
                       <div key={v.Vendor} className={`relative w-full transition-all duration-300 ${v.isDimmed ? 'opacity-20 grayscale pointer-events-none' : 'group cursor-pointer'}`}>
-                        
+
                         {/* Heavy borders on the vendor cards */}
                         <div className={`bg-white shadow-sm rounded px-3 py-2 text-xs font-bold w-full text-center transition-all border-2 ${v.isDimmed ? 'border-slate-300 text-slate-400' : 'border-slate-900 text-slate-800 group-hover:border-[color:#00A35D] group-hover:text-[color:#00A35D] group-hover:shadow-md'}`}>
                           {v.Vendor}
                         </div>
-                        
+
                         {!v.isDimmed && (
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-80 p-5 bg-slate-900/95 backdrop-blur-sm text-white rounded-xl opacity-0 group-hover:opacity-100 shadow-2xl z-50 pointer-events-none transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 border border-slate-700 text-left">
                             <div className="flex justify-between items-start border-b border-slate-700 pb-3 mb-3">
