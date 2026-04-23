@@ -44,7 +44,7 @@ export default function App() {
           <img
             src={`${import.meta.env.BASE_URL}stack-solutions-logo.png`}
             alt="stack solutions"
-            className="h-12 w-auto object-contain"
+            className="h-48 w-auto object-contain"
           />
           {/* Light Gray Title Text */}
           <h1 className="text-3xl font-bold text-[color:#707070]">AI Security Stack Matrix</h1>
