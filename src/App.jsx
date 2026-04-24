@@ -6,23 +6,27 @@ import QuadrantView from './components/QuadrantView';
 import StackAnalyzer from './components/StackAnalyzer';
 import VendorLookupView from './components/VendorLookupView';
 
+// LIVE GOOGLE SHEETS DATA PIPELINE
+const VENDORS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3AGYWOTirLPqmIKIspnjqyCE8t41W8I0uv6kDITO2rRu-751eSo322Llp7KUoRroJx0dIMep6mMrM/pub?gid=351895849&single=true&output=csv";
+const OVERLAPS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3AGYWOTirLPqmIKIspnjqyCE8t41W8I0uv6kDITO2rRu-751eSo322Llp7KUoRroJx0dIMep6mMrM/pub?gid=388223364&single=true&output=csv";
+
 export default function App() {
   const [rawVendors, setRawVendors] = useState(null);
   const [overlaps, setOverlaps] = useState(null);
   const [activeTab, setActiveTab] = useState('swimlane');
   const [filterSize, setFilterSize] = useState('All');
   const [filterFriction, setFilterFriction] = useState('All');
-  const [searchQuery, setSearchQuery] = useState(''); // Added Search State
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Load from public folder instead of Google Sheets for the initial build
+  // Fetch directly from live Google Sheets
   useEffect(() => {
     Promise.all([
-      fetch(`${import.meta.env.BASE_URL}data/Vendors.csv`).then(r => r.text()),
-      fetch(`${import.meta.env.BASE_URL}data/Overlap_Details.csv`).then(r => r.text())
-    ]).then(([vendorsCsv, overlapsCsv]) => {
-      Papa.parse(vendorsCsv, { header: true, skipEmptyLines: true, complete: (res) => setRawVendors(res.data) });
-      Papa.parse(overlapsCsv, { header: true, skipEmptyLines: true, complete: (res) => setOverlaps(res.data) });
-    }).catch(err => console.error("Error loading CSVs:", err));
+      new Promise(resolve => Papa.parse(VENDORS_SHEET_URL, { download: true, header: true, skipEmptyLines: true, complete: resolve })),
+      new Promise(resolve => Papa.parse(OVERLAPS_SHEET_URL, { download: true, header: true, skipEmptyLines: true, complete: resolve }))
+    ]).then(([vendorsRes, overlapsRes]) => {
+      setRawVendors(vendorsRes.data);
+      setOverlaps(overlapsRes.data);
+    }).catch(err => console.error("Error loading Live Sheets:", err));
   }, []);
 
   const vendors = React.useMemo(() => {
@@ -30,35 +34,29 @@ export default function App() {
     return rawVendors.map(v => {
       const matchSize = filterSize === 'All' || (v['Target Size'] && v['Target Size'].includes(filterSize));
       const matchFriction = filterFriction === 'All' || v['Deployment Friction'] === filterFriction;
-      
-      // Global Search Logic integration
       const matchSearch = searchQuery === '' || (v.Vendor && v.Vendor.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      // A vendor is dimmed if it fails ANY of the filters (size, friction, or search)
       return { ...v, isDimmed: !(matchSize && matchFriction && matchSearch) };
     });
   }, [rawVendors, filterSize, filterFriction, searchQuery]);
 
   if (!vendors || !overlaps) {
-    return <div className="min-h-screen flex items-center justify-center bg-slate-50 font-bold text-xl text-slate-800">Loading Stack Solutions Database...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-slate-50 font-bold text-xl text-slate-800">Syncing Live Intelligence Database...</div>;
   }
 
   return (
     <div className="w-full max-w-[96vw] mx-auto p-6 text-[color:#707070] font-sans">
       <header className="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center border-b-2 border-slate-900 pb-4 gap-4">
         <div className="flex items-center space-x-6">
-          {/* Brand Logo - Kept your h-48 sizing */}
           <img
             src={`${import.meta.env.BASE_URL}stack-solutions-logo.png`}
             alt="stack solutions"
             className="h-48 w-auto object-contain"
           />
-          {/* Light Gray Title Text */}
           <h1 className="text-3xl font-bold text-[color:#707070]">AI Security Stack Matrix</h1>
         </div>
 
         <div className="flex flex-col items-end gap-3 w-full lg:w-auto">
-          {/* Global Search Bar */}
           <input 
             type="text" 
             placeholder="Search for a vendor..." 
@@ -67,7 +65,6 @@ export default function App() {
             className="px-4 py-2 border-2 border-slate-900 rounded-lg w-full md:w-72 focus:outline-none focus:border-[color:#00A35D] shadow-sm font-bold text-slate-700"
           />
           
-          {/* Branded Tab Navigation */}
           <div className="flex flex-wrap justify-end gap-2">
             <button
               onClick={() => setActiveTab('swimlane')}
@@ -99,7 +96,6 @@ export default function App() {
         totalTools={rawVendors.length} activeCount={vendors.filter(v => !v.isDimmed).length}
       />
 
-      {/* Main Content Rendering */}
       {activeTab === 'swimlane' && <SwimlaneView data={vendors} />}
       {activeTab === 'quadrant' && <QuadrantView data={vendors} />}
       {activeTab === 'conflict' && <StackAnalyzer vendors={vendors} overlaps={overlaps} />}
