@@ -17,28 +17,46 @@ export default function App() {
   const [filterSize, setFilterSize] = useState('All');
   const [filterFriction, setFilterFriction] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null); // Added Diagnostic State
 
-  // Fetch directly from live Google Sheets using native fetch for CORS reliability
   useEffect(() => {
     Promise.all([
-      fetch(VENDORS_SHEET_URL).then(res => res.text()),
-      fetch(OVERLAPS_SHEET_URL).then(res => res.text())
+      fetch(VENDORS_SHEET_URL).then(res => {
+        if (!res.ok) throw new Error("Network fetch failed.");
+        return res.text();
+      }),
+      fetch(OVERLAPS_SHEET_URL).then(res => {
+        if (!res.ok) throw new Error("Network fetch failed.");
+        return res.text();
+      })
     ]).then(([vendorsCsv, overlapsCsv]) => {
+      
+      // DIAGNOSTIC 1: Did Google send an HTML Login Page instead of a CSV?
+      if (vendorsCsv.trim().toLowerCase().startsWith('<!doctype html>') || vendorsCsv.toLowerCase().includes('<html')) {
+        throw new Error("Google Sheets Access Denied. It returned a secure login page instead of the raw data. Open your Google Sheet > File > Share > Publish to Web > 'Published content & settings' and UNCHECK the box that says 'Require viewers to sign in'.");
+      }
+
       Papa.parse(vendorsCsv, { 
         header: true, 
         skipEmptyLines: true, 
-        complete: (res) => setRawVendors(res.data) 
+        complete: (res) => {
+          // DIAGNOSTIC 2: Did it download the wrong tab?
+          if(res.data.length > 0 && !res.data[0].Vendor) {
+            setErrorMessage("Data format error: Could not find the 'Vendor' column. Did you accidentally publish the wrong tab?");
+          }
+          setRawVendors(res.data);
+        }
       });
+      
       Papa.parse(overlapsCsv, { 
         header: true, 
         skipEmptyLines: true, 
         complete: (res) => setOverlaps(res.data) 
       });
+
     }).catch(err => {
-      console.error("Error loading Live Sheets:", err);
-      // Failsafe so you aren't stuck on a loading screen if the fetch fails
-      setRawVendors([]); 
-      setOverlaps([]);
+      console.error("Live Sheets Error:", err);
+      setErrorMessage(err.message || "Failed to fetch data from Google Sheets. Check your network or browser settings.");
     });
   }, []);
 
@@ -52,6 +70,21 @@ export default function App() {
       return { ...v, isDimmed: !(matchSize && matchFriction && matchSearch) };
     });
   }, [rawVendors, filterSize, filterFriction, searchQuery]);
+
+  // If the diagnostic engine caught an error, display it loudly to the user
+  if (errorMessage) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6 font-sans">
+        <div className="bg-white border-2 border-red-500 rounded-xl shadow-[8px_8px_0px_0px_#ef4444] p-10 max-w-2xl text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-black text-slate-800 mb-4">Database Connection Failed</h2>
+          <p className="text-red-700 font-bold bg-red-50 p-4 rounded-lg border border-red-200">
+            {errorMessage}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!vendors || !overlaps) {
     return <div className="min-h-screen flex items-center justify-center bg-slate-50 font-bold text-xl text-slate-800">Syncing Live Intelligence Database...</div>;
