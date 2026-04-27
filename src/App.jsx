@@ -6,9 +6,9 @@ import QuadrantView from './components/QuadrantView';
 import StackAnalyzer from './components/StackAnalyzer';
 import VendorLookupView from './components/VendorLookupView';
 
-// LIVE GOOGLE SHEETS DATA PIPELINE
-const VENDORS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3AGYWOTirLPqmIKIspnjqyCE8t41W8I0uv6kDITO2rRu-751eSo322Llp7KUoRroJx0dIMep6mMrM/pub?gid=351895849&single=true&output=csv";
-const OVERLAPS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3AGYWOTirLPqmIKIspnjqyCE8t41W8I0uv6kDITO2rRu-751eSo322Llp7KUoRroJx0dIMep6mMrM/pub?gid=388223364&single=true&output=csv";
+// DIRECT EXPORT PIPELINE (Bypasses Google Workspace HTML Login Walls)
+const VENDORS_SHEET_URL = "https://docs.google.com/spreadsheets/d/1LAxQKNjZ0S4qpxfFgqQmDtzqajAhXUw2Oi3w2PwO9_8/export?format=csv&gid=351895849";
+const OVERLAPS_SHEET_URL = "https://docs.google.com/spreadsheets/d/1LAxQKNjZ0S4qpxfFgqQmDtzqajAhXUw2Oi3w2PwO9_8/export?format=csv&gid=388223364";
 
 export default function App() {
   const [rawVendors, setRawVendors] = useState(null);
@@ -17,7 +17,7 @@ export default function App() {
   const [filterSize, setFilterSize] = useState('All');
   const [filterFriction, setFilterFriction] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null); // Added Diagnostic State
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -29,20 +29,26 @@ export default function App() {
         if (!res.ok) throw new Error("Network fetch failed.");
         return res.text();
       })
-    ]).then(([vendorsCsv, overlapsCsv]) => {
+    ]).then(([vendorsRaw, overlapsRaw]) => {
       
-      // DIAGNOSTIC 1: Did Google send an HTML Login Page instead of a CSV?
-      if (vendorsCsv.trim().toLowerCase().startsWith('<!doctype html>') || vendorsCsv.toLowerCase().includes('<html')) {
-        throw new Error("Google Sheets Access Denied. It returned a secure login page instead of the raw data. Open your Google Sheet > File > Share > Publish to Web > 'Published content & settings' and UNCHECK the box that says 'Require viewers to sign in'.");
+      if (vendorsRaw.trim().toLowerCase().startsWith('<!doctype html>') || vendorsRaw.toLowerCase().includes('<html')) {
+        throw new Error("Google Sheets Access Denied. Make sure the document's General Access is set to 'Anyone with the link'.");
       }
+
+      // Strip invisible Byte Order Marks (BOM)
+      const vendorsCsv = vendorsRaw.replace(/^\uFEFF/, '').trim();
+      const overlapsCsv = overlapsRaw.replace(/^\uFEFF/, '').trim();
 
       Papa.parse(vendorsCsv, { 
         header: true, 
         skipEmptyLines: true, 
         complete: (res) => {
-          // DIAGNOSTIC 2: Did it download the wrong tab?
-          if(res.data.length > 0 && !res.data[0].Vendor) {
-            setErrorMessage("Data format error: Could not find the 'Vendor' column. Did you accidentally publish the wrong tab?");
+          if(res.data.length > 0) {
+            const firstRowKeys = Object.keys(res.data[0]);
+            if (!firstRowKeys.includes('Vendor')) {
+              setErrorMessage(`Data format error: Could not find the 'Vendor' column. Check that 'Vendor' is in Cell A1.`);
+              return;
+            }
           }
           setRawVendors(res.data);
         }
@@ -56,7 +62,7 @@ export default function App() {
 
     }).catch(err => {
       console.error("Live Sheets Error:", err);
-      setErrorMessage(err.message || "Failed to fetch data from Google Sheets. Check your network or browser settings.");
+      setErrorMessage(err.message || "Failed to fetch data from Google Sheets.");
     });
   }, []);
 
@@ -71,7 +77,6 @@ export default function App() {
     });
   }, [rawVendors, filterSize, filterFriction, searchQuery]);
 
-  // If the diagnostic engine caught an error, display it loudly to the user
   if (errorMessage) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6 font-sans">
