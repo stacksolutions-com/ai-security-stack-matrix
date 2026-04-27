@@ -18,15 +18,28 @@ export default function App() {
   const [filterFriction, setFilterFriction] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch directly from live Google Sheets
+  // Fetch directly from live Google Sheets using native fetch for CORS reliability
   useEffect(() => {
     Promise.all([
-      new Promise(resolve => Papa.parse(VENDORS_SHEET_URL, { download: true, header: true, skipEmptyLines: true, complete: resolve })),
-      new Promise(resolve => Papa.parse(OVERLAPS_SHEET_URL, { download: true, header: true, skipEmptyLines: true, complete: resolve }))
-    ]).then(([vendorsRes, overlapsRes]) => {
-      setRawVendors(vendorsRes.data);
-      setOverlaps(overlapsRes.data);
-    }).catch(err => console.error("Error loading Live Sheets:", err));
+      fetch(VENDORS_SHEET_URL).then(res => res.text()),
+      fetch(OVERLAPS_SHEET_URL).then(res => res.text())
+    ]).then(([vendorsCsv, overlapsCsv]) => {
+      Papa.parse(vendorsCsv, { 
+        header: true, 
+        skipEmptyLines: true, 
+        complete: (res) => setRawVendors(res.data) 
+      });
+      Papa.parse(overlapsCsv, { 
+        header: true, 
+        skipEmptyLines: true, 
+        complete: (res) => setOverlaps(res.data) 
+      });
+    }).catch(err => {
+      console.error("Error loading Live Sheets:", err);
+      // Failsafe so you aren't stuck on a loading screen if the fetch fails
+      setRawVendors([]); 
+      setOverlaps([]);
+    });
   }, []);
 
   const vendors = React.useMemo(() => {
